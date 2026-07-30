@@ -1,60 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Mail, ExternalLink, GraduationCap } from 'lucide-react';
+import { api } from '../services/api';
 
 export default function Docentes() {
   const [searchTerm, setSearchTerm] = useState('');
   const [deptFilter, setDeptFilter] = useState('all');
+  const [teachers, setTeachers] = useState([]);
 
-  const teachers = [
-    {
-      id: 1,
-      name: 'Dr. Alejandro Rivas',
-      title: 'Ph.D. en Telecomunicaciones',
-      department: 'telecom',
-      email: 'arivas@universidad.edu.ec',
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
-      scholar: 'https://scholar.google.com/',
-      orcid: 'https://orcid.org/',
-      scopus: 'https://www.scopus.com/',
-      bio: 'Especialista en redes inalámbricas de baja potencia (LPWAN) y modelamiento de canales de propagación para entornos rurales.',
-    },
-    {
-      id: 2,
-      name: 'M.Sc. Beatriz Castro',
-      title: 'Máster en Sistemas Embebidos',
-      department: 'hardware',
-      email: 'bcastro@universidad.edu.ec',
-      avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=400&q=80',
-      scholar: 'https://scholar.google.com/',
-      orcid: 'https://orcid.org/',
-      scopus: 'https://www.scopus.com/',
-      bio: 'Investigadora en diseño de hardware de bajo consumo y optimización de firmware para sensores agrícolas autónomos.',
-    },
-    {
-      id: 3,
-      name: 'Dr. Carlos Mendoza',
-      title: 'Ph.D. en Ciencias de la Computación',
-      department: 'software',
-      email: 'cmendoza@universidad.edu.ec',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80',
-      scholar: 'https://scholar.google.com/',
-      orcid: 'https://orcid.org/',
-      scopus: 'https://www.scopus.com/',
-      bio: 'Líder del grupo de computación en la nube e inteligencia artificial para la predicción de fluctuaciones en recursos hídricos.',
-    },
-    {
-      id: 4,
-      name: 'M.Sc. Diana Paredes',
-      title: 'Máster en IoT e Industria 4.0',
-      department: 'telecom',
-      email: 'dparedes@universidad.edu.ec',
-      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80',
-      scholar: 'https://scholar.google.com/',
-      orcid: 'https://orcid.org/',
-      scopus: 'https://www.scopus.com/',
-      bio: 'Consultora en automatización de fábricas, integración de protocolos Modbus/MQTT y robótica colaborativa.',
-    },
-  ];
+  useEffect(() => {
+    const fetchTeachers = async () => {
+      const data = await api.getTeachers();
+      setTeachers(data);
+    };
+    fetchTeachers();
+  }, []);
 
   const filteredTeachers = teachers.filter((t) => {
     const matchesSearch = t.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
