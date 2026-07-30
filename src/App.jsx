@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -20,7 +20,13 @@ import MainPanel from './views/Panels/MainPanel';
 import './App.css';
 
 function App() {
-  const [currentRole, setCurrentRole] = useState('publico');
+  const [currentRole, setCurrentRole] = useState(() => {
+    return localStorage.getItem('carrera_role') || 'publico';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('carrera_role', currentRole);
+  }, [currentRole]);
 
   return (
     <Router>
