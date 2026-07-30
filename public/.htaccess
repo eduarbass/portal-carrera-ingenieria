@@ -1,6 +1,11 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
+
+  # Redirigir HTTP a HTTPS
+  RewriteCond %{HTTPS} off
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
   RewriteRule ^index\.html$ - [L]
   # No redirigir peticiones a la carpeta de assets (JS, CSS, imágenes)
   RewriteCond %{REQUEST_URI} !^/assets/

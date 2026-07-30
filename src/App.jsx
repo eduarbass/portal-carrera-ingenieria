@@ -21,10 +21,13 @@ import './App.css';
 
 function App() {
   const [currentRole, setCurrentRole] = useState(() => {
-    return localStorage.getItem('carrera_role') || 'publico';
+    const role = localStorage.getItem('carrera_role') || 'publico';
+    console.log('[DEBUG] App currentRole initialized as:', role);
+    return role;
   });
 
   useEffect(() => {
+    console.log('[DEBUG] Saving currentRole to localStorage:', currentRole);
     localStorage.setItem('carrera_role', currentRole);
   }, [currentRole]);
 
