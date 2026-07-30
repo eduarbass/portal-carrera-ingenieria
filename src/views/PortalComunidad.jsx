@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AlertCircle, PlusCircle, CheckCircle2, Clock, MapPin, Check, Send } from 'lucide-react';
+import { api } from '../services/api';
 
 const INITIAL_REPORTS = [
   {
@@ -32,10 +33,7 @@ const INITIAL_REPORTS = [
 ];
 
 export default function PortalComunidad() {
-  const [reports, setReports] = useState(() => {
-    const saved = localStorage.getItem('vergeles_reports');
-    return saved ? JSON.parse(saved) : INITIAL_REPORTS;
-  });
+  const [reports, setReports] = useState([]);
 
   const [formData, setFormData] = useState({
     category: 'water',
@@ -46,40 +44,44 @@ export default function PortalComunidad() {
 
   const [successMsg, setSuccessMsg] = useState(false);
 
+  const fetchReports = async () => {
+    const data = await api.getReports();
+    setReports(data);
+  };
+
   useEffect(() => {
-    localStorage.setItem('vergeles_reports', JSON.stringify(reports));
-  }, [reports]);
+    fetchReports();
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.description || !formData.location || !formData.reporter) {
       alert('Por favor completa todos los campos del formulario.');
       return;
     }
 
-    const newReport = {
-      id: Date.now(),
+    const newReport = await api.createReport({
       category: formData.category,
       description: formData.description,
       location: formData.location,
       reporter: formData.reporter,
-      status: 'pending',
-      date: new Date().toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' }),
-    };
-
-    setReports([newReport, ...reports]);
-    setFormData({
-      category: 'water',
-      description: '',
-      location: '',
-      reporter: '',
     });
-    setSuccessMsg(true);
-    setTimeout(() => setSuccessMsg(false), 4000);
+
+    if (newReport) {
+      setReports(prev => [newReport, ...prev]);
+      setFormData({
+        category: 'water',
+        description: '',
+        location: '',
+        reporter: '',
+      });
+      setSuccessMsg(true);
+      setTimeout(() => setSuccessMsg(false), 4000);
+    }
   };
 
   const getCategoryLabel = (cat) => {

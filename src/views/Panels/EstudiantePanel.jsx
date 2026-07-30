@@ -1,14 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Upload, FileText, CheckCircle2, AlertCircle } from 'lucide-react';
+import { api } from '../../services/api';
 
 export default function EstudiantePanel() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [uploadedFiles, setUploadedFiles] = useState([
-    { name: 'Informe_Final_Practicas_Vergeles_Velasco.pdf', date: 'Julio 10, 2026', status: 'approved' },
-    { name: 'Firma_Asistencia_Tutor_Alejandro.pdf', date: 'Julio 12, 2026', status: 'approved' },
-  ]);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+
+  const fetchUploads = async () => {
+    const data = await api.getUploads();
+    setUploadedFiles(data.filter(u => u.role === 'student' || !u.role));
+  };
+
+  useEffect(() => {
+    fetchUploads();
+  }, []);
 
   const handleFileChange = (e) => {
     if (e.target.files[0]) {
@@ -16,34 +23,25 @@ export default function EstudiantePanel() {
     }
   };
 
-  const handleUploadSubmit = (e) => {
+  const handleUploadSubmit = async (e) => {
     e.preventDefault();
     if (!selectedFile) return;
 
     setUploading(true);
-    setProgress(0);
+    setProgress(30);
 
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setTimeout(() => {
-            setUploadedFiles([
-              {
-                name: selectedFile.name,
-                date: new Date().toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' }),
-                status: 'pending',
-              },
-              ...uploadedFiles,
-            ]);
-            setSelectedFile(null);
-            setUploading(false);
-          }, 400);
-          return 100;
-        }
-        return prev + 10;
-      });
-    }, 100);
+    // Direct API Upload
+    const result = await api.uploadFile(selectedFile, 'student');
+    setProgress(100);
+
+    setTimeout(() => {
+      if (result) {
+        setUploadedFiles(prev => [result, ...prev]);
+        setSelectedFile(null);
+      }
+      setUploading(false);
+      setProgress(0);
+    }, 600);
   };
 
   return (

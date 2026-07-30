@@ -1,0 +1,46 @@
+[
+  {
+    "id": 1,
+    "type": "thesis",
+    "title": "Sistema Autónomo de Riego Basado en IoT y Sensores de Humedad de Suelos para la Comunidad Los Vergeles",
+    "author": "Ing. Gabriel Velasco",
+    "advisor": "M.Sc. Beatriz Castro",
+    "date": "Junio 2026",
+    "tags": ["IoT", "AgroSmart", "ESP32"],
+    "abstract": "Esta investigación propone un diseño e implementación de un nodo sensor y actuador alimentado por energía fotovoltaica para optimizar la dosificación del recurso hídrico en sembríos locales.",
+    "fileSize": "4.8 MB"
+  },
+  {
+    "id": 2,
+    "type": "paper",
+    "title": "Performance Analysis of LoRaWAN Propagation in Mountainous Rural Topographies",
+    "author": "Dr. Alejandro Rivas, M.Sc. Diana Paredes",
+    "advisor": "N/A (Publicación Indexada)",
+    "date": "Marzo 2026",
+    "tags": ["LoRaWAN", "RF", "Rural Link"],
+    "abstract": "Evaluación empírica y computacional de la pérdida de trayectoria en enlaces inalámbricos sub-GHz en topografías con vegetación densa e irregularidades orográficas.",
+    "fileSize": "1.2 MB"
+  },
+  {
+    "id": 3,
+    "type": "project",
+    "title": "Diseño e Integración de un Banco de Baterías Inteligente con Telemetría Modbus/MQTT",
+    "author": "Est. Marlon Guevara, Est. Sonia Calle",
+    "advisor": "Dr. Carlos Mendoza",
+    "date": "Febrero 2026",
+    "tags": ["Modbus", "Baterías", "MQTT"],
+    "abstract": "Prototipo de cargador inteligente que mide voltaje, corriente, temperatura y resistencia interna de celdas de litio, reportando métricas vía bróker MQTT en tiempo real.",
+    "fileSize": "3.5 MB"
+  },
+  {
+    "id": 4,
+    "type": "guide",
+    "title": "Guía de Buenas Prácticas de Ciberseguridad en el Despliegue de Puertas de Enlace (Gateways) LoRaWAN",
+    "author": "Carrera de Ingeniería en IoT",
+    "advisor": "Comité Técnico Académico",
+    "date": "Enero 2026",
+    "tags": ["Seguridad", "Gateway", "Cifrado"],
+    "abstract": "Manual didáctico con directrices para la configuración de llaves de red, firewalls, puertos seguros y actualizaciones de firmware en gateways expuestos al exterior.",
+    "fileSize": "1.5 MB"
+  }
+]

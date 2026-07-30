@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AlertCircle, Trash2, Shield } from 'lucide-react';
+import { api } from '../../services/api';
 
 const INITIAL_REPORTS = [
   {
@@ -34,30 +35,28 @@ const INITIAL_REPORTS = [
 export default function AdminPanel() {
   const [reports, setReports] = useState([]);
 
+  const fetchReports = async () => {
+    const data = await api.getReports();
+    setReports(data);
+  };
+
   useEffect(() => {
-    const saved = localStorage.getItem('vergeles_reports');
-    if (saved) {
-      setReports(JSON.parse(saved));
-    } else {
-      setReports(INITIAL_REPORTS);
-      localStorage.setItem('vergeles_reports', JSON.stringify(INITIAL_REPORTS));
-    }
+    fetchReports();
   }, []);
 
-  const saveReports = (updatedList) => {
-    setReports(updatedList);
-    localStorage.setItem('vergeles_reports', JSON.stringify(updatedList));
+  const handleUpdateStatus = async (id, newStatus) => {
+    const success = await api.updateReportStatus(id, newStatus);
+    if (success) {
+      fetchReports();
+    }
   };
 
-  const handleUpdateStatus = (id, newStatus) => {
-    const updated = reports.map((r) => (r.id === id ? { ...r, status: newStatus } : r));
-    saveReports(updated);
-  };
-
-  const handleDeleteReport = (id) => {
+  const handleDeleteReport = async (id) => {
     if (window.confirm('¿Estás seguro de que deseas eliminar este reporte del sistema?')) {
-      const updated = reports.filter((r) => r.id !== id);
-      saveReports(updated);
+      const success = await api.deleteReport(id);
+      if (success) {
+        fetchReports();
+      }
     }
   };
 

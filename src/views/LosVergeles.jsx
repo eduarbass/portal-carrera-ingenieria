@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Activity, Sun, Droplets, Thermometer, AlertTriangle, RefreshCw, Layers } from 'lucide-react';
+import { api } from '../services/api';
 
 // Safe DivIcon builders to avoid Leaflet missing icon issues
 const createGlowIcon = (color) => {
@@ -42,69 +43,39 @@ export default function LosVergeles() {
     { time: '10:25', water: 78, solar: 58.8, temp: 24.2 }
   ]);
 
-  // Simulate real-time fluctuations
+  // Fetch telemetry from API or fallback
+  const fetchTelemetry = async () => {
+    const data = await api.getTelemetry();
+    if (data && data.telemetry) {
+      setTelemetry(data.telemetry);
+      setAnomalyMode(data.telemetry.anomalyMode);
+      if (data.history) {
+        setHistory(data.history);
+      }
+    }
+  };
+
   useEffect(() => {
-    const interval = setInterval(() => {
-      setTelemetry(prev => {
-        const rand = Math.random();
-        
-        let newTemp = prev.temp + (rand - 0.5) * 0.2;
-        let newHum = prev.humidity + (rand - 0.5) * 0.5;
-        let newRes = prev.reservoir + (rand - 0.5) * 0.15;
-        let newVolt = prev.solarVoltage + (rand - 0.5) * 0.3;
-        let newCurr = prev.solarCurrent + (rand - 0.5) * 0.1;
-
-        // Boundaries and anomaly injection
-        if (anomalyMode) {
-          newTemp = Math.min(newTemp + 0.5, 38.5);
-          newRes = Math.max(newRes - 0.8, 12.4);
-          newVolt = Math.min(newVolt + 0.8, 26.5);
-        } else {
-          newTemp = Math.max(18, Math.min(newTemp, 30));
-          newHum = Math.max(40, Math.min(newHum, 85));
-          newRes = Math.max(65, Math.min(newRes, 95));
-          newVolt = Math.max(12, Math.min(newVolt, 21));
-        }
-
-        newCurr = Math.max(0.5, Math.min(newCurr, 8));
-        const newPower = parseFloat((newVolt * newCurr).toFixed(1));
-
-        return {
-          temp: parseFloat(newTemp.toFixed(1)),
-          humidity: parseFloat(newHum.toFixed(1)),
-          reservoir: parseFloat(newRes.toFixed(1)),
-          solarVoltage: parseFloat(newVolt.toFixed(1)),
-          solarCurrent: parseFloat(newCurr.toFixed(1)),
-          power: newPower,
-          co2: Math.max(380, Math.min(prev.co2 + Math.round((rand - 0.5) * 4), 480))
-        };
-      });
-    }, 3000);
-
+    fetchTelemetry();
+    const interval = setInterval(fetchTelemetry, 3000);
     return () => clearInterval(interval);
-  }, [anomalyMode]);
+  }, []);
 
-  // Feed the history chart whenever telemetry updates
-  useEffect(() => {
-    const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-    setHistory(prev => {
-      const next = [...prev, {
-        time: timeStr,
-        water: telemetry.reservoir,
-        solar: telemetry.power,
-        temp: telemetry.temp
-      }];
-      if (next.length > 8) next.shift();
-      return next;
-    });
-  }, [telemetry]);
+  const handleAnomalyToggle = async () => {
+    const nextMode = !anomalyMode;
+    setAnomalyMode(nextMode);
+    await api.setAnomaly(nextMode);
+    fetchTelemetry();
+  };
 
-  const handleManualRefresh = () => {
+  const handleManualRefresh = async () => {
     setIsRefreshing(true);
+    await fetchTelemetry();
     setTimeout(() => {
       setIsRefreshing(false);
     }, 800);
   };
+
 
   const position = [-0.180653, -78.467834];
 
@@ -128,7 +99,7 @@ export default function LosVergeles() {
           
           <div className="flex gap-3">
             <button
-              onClick={() => setAnomalyMode(!anomalyMode)}
+              onClick={handleAnomalyToggle}
               className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 border ${
                 anomalyMode 
                   ? 'bg-red-50 border-red-200 text-red-650 shadow-sm' 
