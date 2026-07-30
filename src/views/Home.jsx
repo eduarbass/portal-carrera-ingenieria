@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Cpu, Users, BookOpen, Layers, Newspaper, ArrowRight, Activity, MapPin } from 'lucide-react';
+import { Cpu, Users, BookOpen, Layers, Newspaper, ArrowRight, Activity, MapPin, Award, ExternalLink } from 'lucide-react';
 
 export default function Home() {
   const [newsFilter, setNewsFilter] = useState('all');
 
   const stats = [
-    { id: 1, name: 'Estudiantes Activos', value: '450+', icon: Users, color: 'text-cyan-600', bg: 'bg-cyan-50' },
-    { id: 2, name: 'Laboratorios Especializados', value: '5', icon: Layers, color: 'text-teal-600', bg: 'bg-teal-50' },
-    { id: 3, name: 'Proyectos Comunitarios', value: '12', icon: Activity, color: 'text-amber-600', bg: 'bg-amber-50' },
-    { id: 4, name: 'Publicaciones Científicas', value: '80+', icon: BookOpen, color: 'text-violet-600', bg: 'bg-violet-50' },
+    { id: 1, name: 'Docentes', value: '18', icon: Users, color: 'text-teal-650', bg: 'bg-teal-50' },
+    { id: 2, name: 'Estudiantes', value: '450+', icon: Users, color: 'text-cyan-650', bg: 'bg-cyan-50' },
+    { id: 3, name: 'Graduados', value: '85', icon: Award, color: 'text-emerald-650', bg: 'bg-emerald-50' },
+    { id: 4, name: 'Laboratorios', value: '5', icon: Layers, color: 'text-violet-650', bg: 'bg-violet-50' },
+    { id: 5, name: 'Proyectos', value: '12', icon: Activity, color: 'text-indigo-650', bg: 'bg-indigo-50' },
+    { id: 6, name: 'Semilleros', value: '2', icon: BookOpen, color: 'text-amber-655', bg: 'bg-amber-50' },
+    { id: 7, name: 'Publicaciones', value: '80+', icon: Newspaper, color: 'text-rose-650', bg: 'bg-rose-50' },
+    { id: 8, name: 'Comunidades Beneficiadas', value: '4', icon: MapPin, color: 'text-blue-650', bg: 'bg-blue-50' },
   ];
 
   const news = [
@@ -57,23 +61,23 @@ export default function Home() {
             <h1 className="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl text-slate-900 leading-tight tracking-tight">
               Ingeniería en <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-cyan-600">IoT y Conectividad</span>
             </h1>
-            <p className="text-slate-650 text-lg leading-relaxed max-w-xl">
+            <p className="text-slate-655 text-lg leading-relaxed max-w-xl">
               Domina la tecnología detrás del hardware inteligente, la adquisición de datos ambientales y las comunicaciones en tiempo real. Diseña soluciones que conecten dispositivos físicos para mejorar comunidades e industrias.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 pt-2">
               <Link
-                to="/los-vergeles"
+                to="/carrera"
                 className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-teal-600 to-teal-500 text-white font-bold hover:opacity-95 transition-all shadow-md shadow-teal-500/10"
               >
-                <span>Ver Monitoreo en Vivo</span>
-                <Activity className="h-5 w-5 animate-pulse" />
+                <span>Conoce la Carrera</span>
+                <ArrowRight className="h-5 w-5" />
               </Link>
               <Link
-                to="/carrera"
+                to="/investigacion"
                 className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl border border-slate-200 bg-white text-slate-700 font-bold hover:bg-slate-55 transition-all"
               >
-                <span>Explorar la Carrera</span>
-                <ArrowRight className="h-5 w-5 text-slate-400" />
+                <span>Proyectos de Investigación</span>
+                <Activity className="h-5 w-5 text-slate-400" />
               </Link>
             </div>
           </div>
@@ -138,69 +142,91 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Focus Features Grid */}
+      {/* Accesos rápidos Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-left">
-        <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-          <h2 className="text-3xl font-display font-bold text-slate-900">Ecosistema Tecnológico</h2>
+        <div className="text-center max-w-3xl mx-auto mb-12 space-y-4">
+          <h2 className="text-3xl font-display font-bold text-slate-900">Accesos Rápidos</h2>
           <p className="text-slate-600">
-            Nuestra malla combina electrónica práctica, comunicaciones inalámbricas, y desarrollo web/cloud. A continuación, accede a los módulos principales de la demo interactiva.
+            Encuentra y accede ágilmente a los servicios, micrositios y recursos de la Carrera de Ingeniería en IoT.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Card 1: Los Vergeles */}
-          <div className="glass p-8 rounded-2xl glass-hover flex flex-col justify-between h-96 relative overflow-hidden group bg-white/60">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/5 rounded-bl-full group-hover:bg-cyan-500/10 transition-colors pointer-events-none"></div>
-            <div className="space-y-4">
-              <div className="h-12 w-12 rounded-xl bg-cyan-50 border border-cyan-150 flex items-center justify-center text-cyan-600">
-                <MapPin className="h-6 w-6" />
-              </div>
-              <h3 className="text-xl font-bold text-slate-800 font-display">Micrositio Los Vergeles</h3>
-              <p className="text-slate-600 text-sm leading-relaxed">
-                Descubre el mapa inteligente interactivo con Leaflet y el dashboard de monitoreo ambiental en tiempo real. Monitorea sensores de producción solar y recursos hídricos.
-              </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* 1. CPT */}
+          <a
+            href="https://ctpunesum.com/index.php"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="glass p-6 rounded-2xl glass-hover flex justify-between items-center bg-white/60 border border-slate-200"
+          >
+            <div className="space-y-1">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider font-mono">Enlace Externo</span>
+              <h4 className="font-bold text-slate-800 text-sm flex items-center gap-1.5">
+                Centro de Producción Tecnológica <ExternalLink className="h-3.5 w-3.5 text-teal-600" />
+              </h4>
             </div>
-            <Link to="/los-vergeles" className="inline-flex items-center gap-2 text-teal-600 font-bold text-sm hover:underline mt-6">
-              <span>Ingresar al Micrositio</span>
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
+            <ArrowRight className="h-4 w-4 text-slate-400 shrink-0" />
+          </a>
 
-          {/* Card 2: Repositorio */}
-          <div className="glass p-8 rounded-2xl glass-hover flex flex-col justify-between h-96 relative overflow-hidden group bg-white/60">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 rounded-bl-full group-hover:bg-purple-500/10 transition-colors pointer-events-none"></div>
-            <div className="space-y-4">
-              <div className="h-12 w-12 rounded-xl bg-purple-50 border border-purple-150 flex items-center justify-center text-purple-650">
-                <BookOpen className="h-6 w-6" />
-              </div>
-              <h3 className="text-xl font-bold text-slate-800 font-display">Repositorio Académico</h3>
-              <p className="text-slate-600 text-sm leading-relaxed">
-                Accede a nuestro motor de búsqueda de tesis, proyectos integradores, y artículos de investigación indexados desarrollados por nuestros docentes y estudiantes.
-              </p>
+          {/* 2. Proyecto Los Vergeles */}
+          <Link
+            to="/los-vergeles"
+            className="glass p-6 rounded-2xl glass-hover flex justify-between items-center bg-white/60 border border-slate-200"
+          >
+            <div className="space-y-1">
+              <span className="text-[10px] font-bold text-teal-650 uppercase tracking-wider font-mono">Micrositio</span>
+              <h4 className="font-bold text-slate-800 text-sm">Proyecto Los Vergeles</h4>
             </div>
-            <Link to="/repositorio" className="inline-flex items-center gap-2 text-purple-600 font-bold text-sm hover:underline mt-6">
-              <span>Buscar Publicaciones</span>
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
+            <ArrowRight className="h-4 w-4 text-slate-400 shrink-0" />
+          </Link>
 
-          {/* Card 3: Reportes Comunidad */}
-          <div className="glass p-8 rounded-2xl glass-hover flex flex-col justify-between h-96 relative overflow-hidden group bg-white/60">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-bl-full group-hover:bg-emerald-500/10 transition-colors pointer-events-none"></div>
-            <div className="space-y-4">
-              <div className="h-12 w-12 rounded-xl bg-emerald-50 border border-emerald-150 flex items-center justify-center text-emerald-600">
-                <Activity className="h-6 w-6" />
-              </div>
-              <h3 className="text-xl font-bold text-slate-800 font-display">Reporte Comunitario</h3>
-              <p className="text-slate-600 text-sm leading-relaxed">
-                Formulario interactivo para que líderes y miembros de la comunidad reporten incidencias de agua potable, electricidad o redes de forma directa al centro de monitoreo.
-              </p>
+          {/* 3. Semilleros */}
+          <Link
+            to="/semilleros"
+            className="glass p-6 rounded-2xl glass-hover flex justify-between items-center bg-white/60 border border-slate-200"
+          >
+            <div className="space-y-1">
+              <span className="text-[10px] font-bold text-amber-655 uppercase tracking-wider font-mono">Investigación</span>
+              <h4 className="font-bold text-slate-800 text-sm">Semilleros Académicos</h4>
             </div>
-            <Link to="/comunidad" className="inline-flex items-center gap-2 text-emerald-600 font-bold text-sm hover:underline mt-6">
-              <span>Reportar Incidencia</span>
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
+            <ArrowRight className="h-4 w-4 text-slate-400 shrink-0" />
+          </Link>
+
+          {/* 4. Laboratorios */}
+          <Link
+            to="/laboratorios"
+            className="glass p-6 rounded-2xl glass-hover flex justify-between items-center bg-white/60 border border-slate-200"
+          >
+            <div className="space-y-1">
+              <span className="text-[10px] font-bold text-violet-650 uppercase tracking-wider font-mono">Infraestructura</span>
+              <h4 className="font-bold text-slate-800 text-sm">Laboratorios Especializados</h4>
+            </div>
+            <ArrowRight className="h-4 w-4 text-slate-400 shrink-0" />
+          </Link>
+
+          {/* 5. Repositorio */}
+          <Link
+            to="/repositorio"
+            className="glass p-6 rounded-2xl glass-hover flex justify-between items-center bg-white/60 border border-slate-200"
+          >
+            <div className="space-y-1">
+              <span className="text-[10px] font-bold text-cyan-650 uppercase tracking-wider font-mono">Publicaciones</span>
+              <h4 className="font-bold text-slate-800 text-sm">Repositorio Digital</h4>
+            </div>
+            <ArrowRight className="h-4 w-4 text-slate-400 shrink-0" />
+          </Link>
+
+          {/* 6. Convocatorias */}
+          <Link
+            to="/noticias"
+            className="glass p-6 rounded-2xl glass-hover flex justify-between items-center bg-white/60 border border-slate-200"
+          >
+            <div className="space-y-1">
+              <span className="text-[10px] font-bold text-emerald-650 uppercase tracking-wider font-mono">Novedades</span>
+              <h4 className="font-bold text-slate-800 text-sm">Convocatorias & Noticias</h4>
+            </div>
+            <ArrowRight className="h-4 w-4 text-slate-400 shrink-0" />
+          </Link>
         </div>
       </section>
 

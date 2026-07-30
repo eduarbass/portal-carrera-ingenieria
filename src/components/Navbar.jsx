@@ -1,20 +1,34 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Cpu, User, ChevronDown } from 'lucide-react';
+import { Menu, X, Cpu, User, ChevronDown, ExternalLink } from 'lucide-react';
 
 export default function Navbar({ currentRole, setCurrentRole }) {
   const [isOpen, setIsOpen] = useState(false);
   const [showRoles, setShowRoles] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState(null); // 'academia' or 'comunidad'
   const location = useLocation();
 
-  const navigation = [
-    { name: 'Inicio', href: '/' },
-    { name: 'Carrera', href: '/carrera' },
+  const academiaLinks = [
+    { name: 'La Carrera', href: '/carrera' },
+    { name: 'Oferta Académica', href: '/oferta-academica' },
     { name: 'Docentes', href: '/docentes' },
     { name: 'Laboratorios', href: '/laboratorios' },
-    { name: 'Los Vergeles', href: '/los-vergeles' },
+    { name: 'Transparencia', href: '/transparencia' },
+  ];
+
+  const comunidadLinks = [
+    { name: 'Comunidad Los Vergeles', href: '/comunidad' },
+    { name: 'Proyecto Los Vergeles (Monitoreo)', href: '/los-vergeles' },
+    { name: 'Centro de Producción (CPT)', href: 'https://ctpunesum.com/index.php', external: true },
+  ];
+
+  const mainLinks = [
+    { name: 'Inicio', href: '/' },
+    { name: 'Investigación', href: '/investigacion' },
+    { name: 'Semilleros', href: '/semilleros' },
+    { name: 'Noticias', href: '/noticias' },
     { name: 'Repositorio', href: '/repositorio' },
-    { name: 'Comunidad', href: '/comunidad' },
+    { name: 'Contacto', href: '/contacto' },
   ];
 
   const roles = [
@@ -38,31 +52,139 @@ export default function Navbar({ currentRole, setCurrentRole }) {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <nav className="sticky top-4 z-50 w-[90%] max-w-7xl mx-auto rounded-2xl border border-slate-200/80 bg-white/80 shadow-md backdrop-blur-md transition-all duration-300 py-1 px-4 my-4">
+    <nav className="sticky top-4 z-50 w-[95%] max-w-7xl mx-auto rounded-2xl border border-slate-200/80 bg-white/80 shadow-md backdrop-blur-md transition-all duration-300 py-1 px-4 my-4">
       <div className="w-full">
         <div className="flex items-center justify-between h-14">
           <div className="flex items-center">
-            <Link to="/" className="flex items-center gap-2 text-slate-900 font-display font-bold text-lg tracking-wider">
+            <Link to="/" className="flex items-center gap-2 text-slate-900 font-display font-bold text-base sm:text-lg tracking-wider">
               <Cpu className="h-5 w-5 text-teal-600 animate-pulse" />
               <span>INGENIERÍA <span className="text-teal-600">IoT</span></span>
             </Link>
           </div>
 
-          {/* Desktop Navigation - Clean inline nav with reduced padding & font sizes to prevent wrapping */}
+          {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-1">
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition-all duration-200 ${
-                  isActive(item.href)
-                    ? 'text-teal-600 bg-teal-50/80 border border-teal-100/50'
-                    : 'text-slate-600 hover:text-slate-950 hover:bg-slate-100/60'
-                }`}
+            <Link
+              to="/"
+              className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition-all duration-200 ${
+                isActive('/') ? 'text-teal-600 bg-teal-50/80' : 'text-slate-605 hover:text-slate-950 hover:bg-slate-100/60'
+              }`}
+            >
+              Inicio
+            </Link>
+
+            {/* Academia Dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setActiveDropdown(activeDropdown === 'academia' ? null : 'academia')}
+                className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold tracking-wide text-slate-605 hover:text-slate-955 hover:bg-slate-100/60 transition-all"
               >
-                {item.name}
-              </Link>
-            ))}
+                <span>Academia</span>
+                <ChevronDown className="h-3 w-3" />
+              </button>
+              {activeDropdown === 'academia' && (
+                <div className="absolute left-0 mt-2 w-48 rounded-xl shadow-xl bg-white border border-slate-200/80 z-50 py-1">
+                  {academiaLinks.map((link) => (
+                    <Link
+                      key={link.name}
+                      to={link.href}
+                      onClick={() => setActiveDropdown(null)}
+                      className={`block px-4 py-2 text-xs transition-colors ${
+                        isActive(link.href) ? 'bg-teal-50 text-teal-700 font-bold' : 'text-slate-700 hover:bg-slate-50'
+                      }`}
+                    >
+                      {link.name}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <Link
+              to="/investigacion"
+              className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition-all duration-200 ${
+                isActive('/investigacion') ? 'text-teal-600 bg-teal-50/80' : 'text-slate-605 hover:text-slate-950 hover:bg-slate-100/60'
+              }`}
+            >
+              Investigación
+            </Link>
+
+            <Link
+              to="/semilleros"
+              className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition-all duration-200 ${
+                isActive('/semilleros') ? 'text-teal-600 bg-teal-50/80' : 'text-slate-605 hover:text-slate-950 hover:bg-slate-100/60'
+              }`}
+            >
+              Semilleros
+            </Link>
+
+            {/* Comunidad Dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setActiveDropdown(activeDropdown === 'comunidad' ? null : 'comunidad')}
+                className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold tracking-wide text-slate-605 hover:text-slate-955 hover:bg-slate-100/60 transition-all"
+              >
+                <span>Comunidad</span>
+                <ChevronDown className="h-3 w-3" />
+              </button>
+              {activeDropdown === 'comunidad' && (
+                <div className="absolute left-0 mt-2 w-56 rounded-xl shadow-xl bg-white border border-slate-200/80 z-50 py-1">
+                  {comunidadLinks.map((link) =>
+                    link.external ? (
+                      <a
+                        key={link.name}
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => setActiveDropdown(null)}
+                        className="flex items-center justify-between px-4 py-2 text-xs text-slate-700 hover:bg-slate-50"
+                      >
+                        <span>{link.name}</span>
+                        <ExternalLink className="h-3 w-3 text-slate-400" />
+                      </a>
+                    ) : (
+                      <Link
+                        key={link.name}
+                        to={link.href}
+                        onClick={() => setActiveDropdown(null)}
+                        className={`block px-4 py-2 text-xs transition-colors ${
+                          isActive(link.href) ? 'bg-teal-50 text-teal-700 font-bold' : 'text-slate-700 hover:bg-slate-50'
+                        }`}
+                      >
+                        {link.name}
+                      </Link>
+                    )
+                  )}
+                </div>
+              )}
+            </div>
+
+            <Link
+              to="/noticias"
+              className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition-all duration-200 ${
+                isActive('/noticias') ? 'text-teal-600 bg-teal-50/80' : 'text-slate-605 hover:text-slate-950 hover:bg-slate-100/60'
+              }`}
+            >
+              Noticias
+            </Link>
+
+            <Link
+              to="/repositorio"
+              className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition-all duration-200 ${
+                isActive('/repositorio') ? 'text-teal-600 bg-teal-50/80' : 'text-slate-605 hover:text-slate-950 hover:bg-slate-100/60'
+              }`}
+            >
+              Repositorio
+            </Link>
+
+            <Link
+              to="/contacto"
+              className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition-all duration-200 ${
+                isActive('/contacto') ? 'text-teal-600 bg-teal-50/80' : 'text-slate-605 hover:text-slate-950 hover:bg-slate-100/60'
+              }`}
+            >
+              Contacto
+            </Link>
           </div>
 
           {/* Role Selector & Login Button */}
@@ -138,22 +260,104 @@ export default function Navbar({ currentRole, setCurrentRole }) {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="lg:hidden bg-white border-t border-slate-150 rounded-b-2xl mt-1">
+        <div className="lg:hidden bg-white border-t border-slate-150 rounded-b-2xl mt-1 max-h-[70vh] overflow-y-auto">
           <div className="px-2 pt-2 pb-3 space-y-1">
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                onClick={() => setIsOpen(false)}
-                className={`block px-3 py-2 rounded-lg text-sm font-semibold ${
-                  isActive(item.href)
-                    ? 'text-teal-600 bg-teal-50'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-                }`}
-              >
-                {item.name}
-              </Link>
-            ))}
+            <Link
+              to="/"
+              onClick={() => setIsOpen(false)}
+              className="block px-3 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+            >
+              Inicio
+            </Link>
+
+            {/* Academia Section on Mobile */}
+            <div className="border-t border-slate-100 pt-2 my-2">
+              <span className="block px-3 py-1 text-[10px] text-slate-400 uppercase font-bold tracking-wider">Academia</span>
+              {academiaLinks.map((link) => (
+                <Link
+                  key={link.name}
+                  to={link.href}
+                  onClick={() => setIsOpen(false)}
+                  className={`block px-3 py-1.5 rounded-lg text-xs ${
+                    isActive(link.href) ? 'text-teal-650 font-bold bg-teal-50' : 'text-slate-500 hover:bg-slate-50'
+                  }`}
+                >
+                  {link.name}
+                </Link>
+              ))}
+            </div>
+
+            <Link
+              to="/investigacion"
+              onClick={() => setIsOpen(false)}
+              className="block px-3 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+            >
+              Investigación
+            </Link>
+
+            <Link
+              to="/semilleros"
+              onClick={() => setIsOpen(false)}
+              className="block px-3 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+            >
+              Semilleros
+            </Link>
+
+            {/* Comunidad Section on Mobile */}
+            <div className="border-t border-slate-100 pt-2 my-2">
+              <span className="block px-3 py-1 text-[10px] text-slate-400 uppercase font-bold tracking-wider">Comunidad</span>
+              {comunidadLinks.map((link) =>
+                link.external ? (
+                  <a
+                    key={link.name}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center justify-between px-3 py-1.5 rounded-lg text-xs text-slate-500 hover:bg-slate-50"
+                  >
+                    <span>{link.name}</span>
+                    <ExternalLink className="h-3.5 w-3.5 text-slate-400" />
+                  </a>
+                ) : (
+                  <Link
+                    key={link.name}
+                    to={link.href}
+                    onClick={() => setIsOpen(false)}
+                    className={`block px-3 py-1.5 rounded-lg text-xs ${
+                      isActive(link.href) ? 'text-teal-650 font-bold bg-teal-50' : 'text-slate-500 hover:bg-slate-50'
+                    }`}
+                  >
+                    {link.name}
+                  </Link>
+                )
+              )}
+            </div>
+
+            <Link
+              to="/noticias"
+              onClick={() => setIsOpen(false)}
+              className="block px-3 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+            >
+              Noticias
+            </Link>
+
+            <Link
+              to="/repositorio"
+              onClick={() => setIsOpen(false)}
+              className="block px-3 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+            >
+              Repositorio
+            </Link>
+
+            <Link
+              to="/contacto"
+              onClick={() => setIsOpen(false)}
+              className="block px-3 py-2 rounded-lg text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+            >
+              Contacto
+            </Link>
+
             <div className="border-t border-slate-100 my-2 pt-2">
               <span className="block px-3 py-1 text-[10px] text-slate-400 uppercase font-bold tracking-wider">Simular Rol</span>
               {roles.map((r) => (
@@ -170,27 +374,6 @@ export default function Navbar({ currentRole, setCurrentRole }) {
                   {r.name}
                 </button>
               ))}
-            </div>
-            <div className="pt-2 px-3">
-              {currentRole !== 'publico' ? (
-                <Link
-                  to="/panel"
-                  onClick={() => setIsOpen(false)}
-                  className="w-full text-center block px-4 py-2 rounded-lg bg-teal-600 text-white font-bold text-xs"
-                >
-                  Ir a Mi Panel
-                </Link>
-              ) : (
-                <button
-                  onClick={() => {
-                    setCurrentRole('estudiante');
-                    setIsOpen(false);
-                  }}
-                  className="w-full text-center block px-4 py-2 rounded-lg border border-teal-600 text-teal-600 font-bold text-xs"
-                >
-                  Acceder Demo
-                </button>
-              )}
             </div>
           </div>
         </div>

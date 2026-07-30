@@ -64,6 +64,25 @@ export default function Laboratorios() {
     },
     {
       id: 4,
+      name: 'Laboratorio de Robótica y Automatización',
+      shortName: 'Robótica',
+      schedule: 'Lunes a Viernes: 08:00 - 16:00',
+      coordinator: 'Dr. Alejandro Rivas',
+      equipment: [
+        'Brazos robóticos industriales de 6 grados de libertad',
+        'Placas de control PLC Siemens S7-1200',
+        'Motores paso a paso, servomotores y encoders absolutos',
+        'Kits de desarrollo ROS (Robot Operating System) con LiDAR',
+      ],
+      manuals: [
+        { title: 'Manual de Programación de PLCs para Automatización.pdf', size: '3.5 MB' },
+        { title: 'Guía Práctica de Cinemática Inversa en Brazos Robóticos.pdf', size: '2.8 MB' },
+      ],
+      image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80',
+      description: 'Dedicado al estudio del movimiento, control autónomo, servomecanismos y la integración de sensores de proximidad y visión computacional.',
+    },
+    {
+      id: 5,
       name: 'Centro de Prototipado Tecnológico (CPT)',
       shortName: 'Prototipado (CPT)',
       schedule: 'Lunes a Viernes: 09:00 - 18:00',
