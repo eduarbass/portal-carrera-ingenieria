@@ -18,6 +18,30 @@ if (!file_exists($uploadsDir)) {
     mkdir($uploadsDir, 0755, true);
 }
 
+// Database config file path
+$configFile = __DIR__ . '/db_config.php';
+$pdo = null;
+
+// Attempt database connection if config exists
+if (file_exists($configFile)) {
+    include_once($configFile);
+    if (defined('DB_HOST') && defined('DB_NAME') && defined('DB_USER') && defined('DB_PASS')) {
+        try {
+            $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4";
+            $options = [
+                PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_EMULATE_PREPARES   => false,
+            ];
+            $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
+        } catch (\PDOException $e) {
+            // Log connection error but don't crash, fallback to JSON
+            error_log("Database connection failed: " . $e->getMessage());
+        }
+    }
+}
+
+// File paths for JSON fallback
 $telemetryFile = $dataDir . '/telemetry.json';
 $reportsFile = $dataDir . '/reports.json';
 $uploadsFile = $dataDir . '/uploads.json';
@@ -29,29 +53,163 @@ function sendError($message, $code = 400) {
     exit;
 }
 
-// 1. Manage Telemetry
-function getTelemetry($telemetryFile) {
-    $defaultTelemetry = [
-        "temp" => 24.2,
-        "humidity" => 62.4,
-        "reservoir" => 78.5,
-        "solarVoltage" => 18.4,
-        "solarCurrent" => 3.2,
-        "power" => 58.8,
-        "co2" => 412,
-        "anomalyMode" => false,
-        "last_updated" => time()
-    ];
+// Initial default structures
+$defaultTelemetry = [
+    "temp" => 24.2,
+    "humidity" => 62.4,
+    "reservoir" => 78.5,
+    "solarVoltage" => 18.4,
+    "solarCurrent" => 3.2,
+    "power" => 58.8,
+    "co2" => 412,
+    "anomalyMode" => false,
+    "last_updated" => time()
+];
 
-    $defaultHistory = [
-        ["time" => "10:00", "water" => 72, "solar" => 45, "temp" => 22],
-        ["time" => "10:05", "water" => 73, "solar" => 48, "temp" => 22.5],
-        ["time" => "10:10", "water" => 74, "solar" => 50, "temp" => 23],
-        ["time" => "10:15", "water" => 75, "solar" => 52, "temp" => 23.4],
-        ["time" => "10:20", "water" => 77, "solar" => 55, "temp" => 23.8],
-        ["time" => "10:25", "water" => 78, "solar" => 58.8, "temp" => 24.2]
-    ];
+$defaultHistory = [
+    ["time" => "10:00", "water" => 72, "solar" => 45, "temp" => 22],
+    ["time" => "10:05", "water" => 73, "solar" => 48, "temp" => 22.5],
+    ["time" => "10:10", "water" => 74, "solar" => 50, "temp" => 23],
+    ["time" => "10:15", "water" => 75, "solar" => 52, "temp" => 23.4],
+    ["time" => "10:20", "water" => 77, "solar" => 55, "temp" => 23.8],
+    ["time" => "10:25", "water" => 78, "solar" => 58.8, "temp" => 24.2]
+];
 
+$initialReports = [
+    [
+        "id" => 101,
+        "category" => "water",
+        "description" => "Baja presión detectada en la acometida norte de la escuela de Los Vergeles.",
+        "location" => "Sector Escuela Comunitaria",
+        "reporter" => "Sr. Manuel Guamán (Líder Vecinal)",
+        "status" => "progress",
+        "date" => "Julio 27, 2026"
+    ],
+    [
+        "id" => 102,
+        "category" => "energy",
+        "description" => "Fluctuaciones de voltaje intermitentes en el banco de inversores solares secundarios.",
+        "location" => "Estación de Baterías Norte",
+        "reporter" => "Ing. Alejandro Rivas",
+        "status" => "pending",
+        "date" => "Julio 28, 2026"
+    ],
+    [
+        "id" => 103,
+        "category" => "telecom",
+        "description" => "Reemplazo y calibración del nodo gateway LoRaWAN principal finalizado con éxito.",
+        "location" => "Torre de Transmisión del Aula Tecnológica",
+        "reporter" => "M.Sc. Diana Paredes",
+        "status" => "resolved",
+        "date" => "Julio 24, 2026"
+    ]
+];
+
+$initialUploads = [
+    ["name" => "Informe_Final_Practicas_Vergeles_Velasco.pdf", "date" => "Julio 10, 2026", "status" => "approved", "role" => "student"],
+    ["name" => "Firma_Asistencia_Tutor_Alejandro.pdf", "date" => "Julio 12, 2026", "status" => "approved", "role" => "student"]
+];
+
+// 1. Manage Telemetry (MySQL or JSON fallback)
+function getTelemetry($pdo, $telemetryFile, $defaultTelemetry, $defaultHistory) {
+    if ($pdo) {
+        try {
+            // Get current telemetry row
+            $stmt = $pdo->query("SELECT * FROM telemetry LIMIT 1");
+            $telemetry = $stmt->fetch();
+            
+            if (!$telemetry) {
+                // Seed telemetry
+                $stmt = $pdo->prepare("INSERT INTO telemetry (temp, humidity, reservoir, solarVoltage, solarCurrent, power, co2, anomalyMode, last_updated) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt->execute([
+                    $defaultTelemetry['temp'], $defaultTelemetry['humidity'], $defaultTelemetry['reservoir'],
+                    $defaultTelemetry['solarVoltage'], $defaultTelemetry['solarCurrent'], $defaultTelemetry['power'],
+                    $defaultTelemetry['co2'], 0, $defaultTelemetry['last_updated']
+                ]);
+                $telemetry = $defaultTelemetry;
+                $telemetry['id'] = $pdo->lastInsertId();
+            }
+            
+            $telemetry['anomalyMode'] = (bool)$telemetry['anomalyMode'];
+            
+            // Get history log
+            $stmt = $pdo->query("SELECT time_str as time, water, solar, temp FROM telemetry_history ORDER BY id ASC");
+            $history = $stmt->fetchAll();
+            
+            if (empty($history)) {
+                $history = $defaultHistory;
+            }
+            
+            // Fluctuations check
+            $now = time();
+            if ($now - $telemetry['last_updated'] >= 3) {
+                $rand = (mt_rand() / mt_getrandmax());
+                $anomalyMode = $telemetry['anomalyMode'];
+
+                $newTemp = $telemetry['temp'] + ($rand - 0.5) * 0.2;
+                $newHum = $telemetry['humidity'] + ($rand - 0.5) * 0.5;
+                $newRes = $telemetry['reservoir'] + ($rand - 0.5) * 0.15;
+                $newVolt = $telemetry['solarVoltage'] + ($rand - 0.5) * 0.3;
+                $newCurr = $telemetry['solarCurrent'] + ($rand - 0.5) * 0.1;
+
+                if ($anomalyMode) {
+                    $newTemp = min($newTemp + 0.5, 38.5);
+                    $newRes = max($newRes - 0.8, 12.4);
+                    $newVolt = min($newVolt + 0.8, 26.5);
+                } else {
+                    $newTemp = max(18.0, min($newTemp, 30.0));
+                    $newHum = max(40.0, min($newHum, 85.0));
+                    $newRes = max(65.0, min($newRes, 95.0));
+                    $newVolt = max(12.0, min($newVolt, 21.0));
+                }
+
+                $newCurr = max(0.5, min($newCurr, 8.0));
+                $newPower = round($newVolt * $newCurr, 1);
+
+                $telemetry = [
+                    "temp" => round($newTemp, 1),
+                    "humidity" => round($newHum, 1),
+                    "reservoir" => round($newRes, 1),
+                    "solarVoltage" => round($newVolt, 1),
+                    "solarCurrent" => round($newCurr, 1),
+                    "power" => $newPower,
+                    "co2" => max(380, min($telemetry['co2'] + round(($rand - 0.5) * 4), 480)),
+                    "anomalyMode" => $anomalyMode,
+                    "last_updated" => $now
+                ];
+
+                // Update row in DB
+                $stmt = $pdo->prepare("UPDATE telemetry SET temp=?, humidity=?, reservoir=?, solarVoltage=?, solarCurrent=?, power=?, co2=?, last_updated=? WHERE id=1");
+                $stmt->execute([
+                    $telemetry['temp'], $telemetry['humidity'], $telemetry['reservoir'],
+                    $telemetry['solarVoltage'], $telemetry['solarCurrent'], $telemetry['power'],
+                    $telemetry['co2'], $now
+                ]);
+
+                // Insert into history
+                $timeStr = date("H:i:s", $now);
+                $stmt = $pdo->prepare("INSERT INTO telemetry_history (time_str, water, solar, temp) VALUES (?, ?, ?, ?)");
+                $stmt->execute([$timeStr, $telemetry['reservoir'], $telemetry['power'], $telemetry['temp']]);
+
+                // Clean history to keep last 8 rows
+                $historyCount = $pdo->query("SELECT COUNT(*) FROM telemetry_history")->fetchColumn();
+                if ($historyCount > 8) {
+                    $diff = $historyCount - 8;
+                    $pdo->exec("DELETE FROM telemetry_history ORDER BY id ASC LIMIT $diff");
+                }
+
+                // Retrieve updated history
+                $stmt = $pdo->query("SELECT time_str as time, water, solar, temp FROM telemetry_history ORDER BY id ASC");
+                $history = $stmt->fetchAll();
+            }
+
+            return ["telemetry" => $telemetry, "history" => $history];
+        } catch (\PDOException $e) {
+            error_log("Telemetry SQL error, falling back to JSON: " . $e->getMessage());
+        }
+    }
+
+    // JSON FALLBACK
     if (!file_exists($telemetryFile)) {
         $data = ["telemetry" => $defaultTelemetry, "history" => $defaultHistory];
         file_put_contents($telemetryFile, json_encode($data, JSON_PRETTY_PRINT));
@@ -65,7 +223,6 @@ function getTelemetry($telemetryFile) {
         return $data;
     }
 
-    // Simulate fluctuation if more than 3 seconds have passed
     $telemetry = $data['telemetry'];
     $history = $data['history'];
     $lastUpdated = isset($telemetry['last_updated']) ? $telemetry['last_updated'] : 0;
@@ -107,7 +264,6 @@ function getTelemetry($telemetryFile) {
             "last_updated" => $now
         ];
 
-        // Add to history
         $timeStr = date("H:i:s", $now);
         $history[] = [
             "time" => $timeStr,
@@ -126,38 +282,17 @@ function getTelemetry($telemetryFile) {
     return $data;
 }
 
-// 2. Manage Reports
-$initialReports = [
-    [
-        "id" => 101,
-        "category" => "water",
-        "description" => "Baja presión detectada en la acometida norte de la escuela de Los Vergeles.",
-        "location" => "Sector Escuela Comunitaria",
-        "reporter" => "Sr. Manuel Guamán (Líder Vecinal)",
-        "status" => "progress",
-        "date" => "Julio 27, 2026"
-    ],
-    [
-        "id" => 102,
-        "category" => "energy",
-        "description" => "Fluctuaciones de voltaje intermitentes en el banco de inversores solares secundarios.",
-        "location" => "Estación de Baterías Norte",
-        "reporter" => "Ing. Alejandro Rivas",
-        "status" => "pending",
-        "date" => "Julio 28, 2026"
-    ],
-    [
-        "id" => 103,
-        "category" => "telecom",
-        "description" => "Reemplazo y calibración del nodo gateway LoRaWAN principal finalizado con éxito.",
-        "location" => "Torre de Transmisión del Aula Tecnológica",
-        "reporter" => "M.Sc. Diana Paredes",
-        "status" => "resolved",
-        "date" => "Julio 24, 2026"
-    ]
-];
+// 2. Manage Reports (MySQL or JSON fallback)
+function getReports($pdo, $reportsFile, $initialReports) {
+    if ($pdo) {
+        try {
+            $stmt = $pdo->query("SELECT id, category, description, location, reporter, status, date_str as date FROM reports ORDER BY id DESC");
+            return $stmt->fetchAll();
+        } catch (\PDOException $e) {
+            error_log("Reports SQL error, falling back to JSON: " . $e->getMessage());
+        }
+    }
 
-function getReports($reportsFile, $initialReports) {
     if (!file_exists($reportsFile)) {
         file_put_contents($reportsFile, json_encode($initialReports, JSON_PRETTY_PRINT));
         return $initialReports;
@@ -166,13 +301,17 @@ function getReports($reportsFile, $initialReports) {
     return is_array($reports) ? $reports : $initialReports;
 }
 
-// 3. Manage Student / Teacher Uploaded Files
-$initialUploads = [
-    ["name" => "Informe_Final_Practicas_Vergeles_Velasco.pdf", "date" => "Julio 10, 2026", "status" => "approved", "role" => "student"],
-    ["name" => "Firma_Asistencia_Tutor_Alejandro.pdf", "date" => "Julio 12, 2026", "status" => "approved", "role" => "student"]
-];
+// 3. Manage Uploaded Files (MySQL or JSON fallback)
+function getUploads($pdo, $uploadsFile, $initialUploads) {
+    if ($pdo) {
+        try {
+            $stmt = $pdo->query("SELECT name, date_str as date, status, role FROM uploads ORDER BY id DESC");
+            return $stmt->fetchAll();
+        } catch (\PDOException $e) {
+            error_log("Uploads SQL error, falling back to JSON: " . $e->getMessage());
+        }
+    }
 
-function getUploads($uploadsFile, $initialUploads) {
     if (!file_exists($uploadsFile)) {
         file_put_contents($uploadsFile, json_encode($initialUploads, JSON_PRETTY_PRINT));
         return $initialUploads;
@@ -186,23 +325,34 @@ $action = isset($_GET['action']) ? $_GET['action'] : '';
 
 switch ($action) {
     case 'telemetry':
-        echo json_encode(getTelemetry($telemetryFile));
+        echo json_encode(getTelemetry($pdo, $telemetryFile, $defaultTelemetry, $defaultHistory));
         break;
 
     case 'set_anomaly':
         $data = json_decode(file_get_contents('php://input'), true);
         $anomalyMode = isset($data['anomalyMode']) ? (bool)$data['anomalyMode'] : false;
         
-        $state = getTelemetry($telemetryFile);
+        if ($pdo) {
+            try {
+                $stmt = $pdo->prepare("UPDATE telemetry SET anomalyMode=?, last_updated=? WHERE id=1");
+                $stmt->execute([(int)$anomalyMode, time()]);
+                echo json_encode(getTelemetry($pdo, $telemetryFile, $defaultTelemetry, $defaultHistory));
+                break;
+            } catch (\PDOException $e) {
+                error_log("Set Anomaly SQL error, falling back to JSON: " . $e->getMessage());
+            }
+        }
+
+        $state = getTelemetry(null, $telemetryFile, $defaultTelemetry, $defaultHistory);
         $state['telemetry']['anomalyMode'] = $anomalyMode;
-        $state['telemetry']['last_updated'] = time(); // force update
+        $state['telemetry']['last_updated'] = time();
         
         file_put_contents($telemetryFile, json_encode($state, JSON_PRETTY_PRINT));
         echo json_encode($state);
         break;
 
     case 'reports':
-        echo json_encode(getReports($reportsFile, $initialReports));
+        echo json_encode(getReports($pdo, $reportsFile, $initialReports));
         break;
 
     case 'create_report':
@@ -211,15 +361,42 @@ switch ($action) {
             sendError("Datos incompletos.");
         }
 
-        $reports = getReports($reportsFile, $initialReports);
+        $newReportId = round(microtime(true) * 1000);
+        $category = isset($data['category']) ? $data['category'] : 'water';
+        $description = $data['description'];
+        $location = $data['location'];
+        $reporter = $data['reporter'];
+        $status = "pending";
+        $dateStr = date("d M Y");
+
+        if ($pdo) {
+            try {
+                $stmt = $pdo->prepare("INSERT INTO reports (id, category, description, location, reporter, status, date_str) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                $stmt->execute([$newReportId, $category, $description, $location, $reporter, $status, $dateStr]);
+                echo json_encode([
+                    "id" => $newReportId,
+                    "category" => $category,
+                    "description" => $description,
+                    "location" => $location,
+                    "reporter" => $reporter,
+                    "status" => $status,
+                    "date" => $dateStr
+                ]);
+                break;
+            } catch (\PDOException $e) {
+                error_log("Create Report SQL error, falling back to JSON: " . $e->getMessage());
+            }
+        }
+
+        $reports = getReports(null, $reportsFile, $initialReports);
         $newReport = [
-            "id" => round(microtime(true) * 1000),
-            "category" => isset($data['category']) ? $data['category'] : 'water',
-            "description" => $data['description'],
-            "location" => $data['location'],
-            "reporter" => $data['reporter'],
-            "status" => "pending",
-            "date" => date("d M Y")
+            "id" => $newReportId,
+            "category" => $category,
+            "description" => $description,
+            "location" => $location,
+            "reporter" => $reporter,
+            "status" => $status,
+            "date" => $dateStr
         ];
 
         array_unshift($reports, $newReport);
@@ -233,7 +410,18 @@ switch ($action) {
             sendError("ID o estado faltantes.");
         }
 
-        $reports = getReports($reportsFile, $initialReports);
+        if ($pdo) {
+            try {
+                $stmt = $pdo->prepare("UPDATE reports SET status=? WHERE id=?");
+                $stmt->execute([$data['status'], $data['id']]);
+                echo json_encode(["success" => true, "id" => $data['id'], "status" => $data['status']]);
+                break;
+            } catch (\PDOException $e) {
+                error_log("Update Report Status SQL error, falling back to JSON: " . $e->getMessage());
+            }
+        }
+
+        $reports = getReports(null, $reportsFile, $initialReports);
         $found = false;
         foreach ($reports as &$report) {
             if ($report['id'] == $data['id']) {
@@ -257,7 +445,18 @@ switch ($action) {
             sendError("ID faltante.");
         }
 
-        $reports = getReports($reportsFile, $initialReports);
+        if ($pdo) {
+            try {
+                $stmt = $pdo->prepare("DELETE FROM reports WHERE id=?");
+                $stmt->execute([$data['id']]);
+                echo json_encode(["success" => true, "id" => $data['id']]);
+                break;
+            } catch (\PDOException $e) {
+                error_log("Delete Report SQL error, falling back to JSON: " . $e->getMessage());
+            }
+        }
+
+        $reports = getReports(null, $reportsFile, $initialReports);
         $newReports = [];
         $found = false;
         foreach ($reports as $report) {
@@ -277,7 +476,7 @@ switch ($action) {
         break;
 
     case 'uploads':
-        echo json_encode(getUploads($uploadsFile, $initialUploads));
+        echo json_encode(getUploads($pdo, $uploadsFile, $initialUploads));
         break;
 
     case 'upload_file':
@@ -292,15 +491,31 @@ switch ($action) {
         }
 
         $fileName = basename($file['name']);
-        // Clean filename a bit
         $fileName = preg_replace('/[^a-zA-Z0-9_.-]/', '_', $fileName);
         $targetPath = $uploadsDir . '/' . $fileName;
 
         if (move_uploaded_file($file['tmp_name'], $targetPath)) {
-            $uploads = getUploads($uploadsFile, $initialUploads);
+            $dateStr = date("d M Y");
+            if ($pdo) {
+                try {
+                    $stmt = $pdo->prepare("INSERT INTO uploads (name, date_str, status, role) VALUES (?, ?, ?, ?)");
+                    $stmt->execute([$fileName, $dateStr, 'pending', $role]);
+                    echo json_encode([
+                        "name" => $fileName,
+                        "date" => $dateStr,
+                        "status" => "pending",
+                        "role" => $role
+                    ]);
+                    break;
+                } catch (\PDOException $e) {
+                    error_log("Upload File SQL error, falling back to JSON: " . $e->getMessage());
+                }
+            }
+
+            $uploads = getUploads(null, $uploadsFile, $initialUploads);
             $newUpload = [
                 "name" => $fileName,
-                "date" => date("d M Y"),
+                "date" => $dateStr,
                 "status" => "pending",
                 "role" => $role
             ];
