@@ -39,7 +39,7 @@ Para correr el proyecto en un entorno local de desarrollo, sigue los siguientes 
 
 1. Clona el repositorio en tu equipo:
    ```bash
-   git clone https://github.com/mawil-hub/carrera.git
+   git clone https://github.com/eduarbass/portal-carrera-ingenieria.git
    ```
 
 2. Instala las dependencias de Node:
