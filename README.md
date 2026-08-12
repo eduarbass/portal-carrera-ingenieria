@@ -1,16 +1,54 @@
-# React + Vite
+# Portal Académico - Carrera
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Este repositorio contiene el código fuente del Portal Académico desarrollado para la gestión de la información institucional, académica, investigativa y de vinculación.
 
-Currently, two official plugins are available:
+## Tecnologías Utilizadas
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+El proyecto fue construido utilizando un stack moderno y eficiente enfocado en alto rendimiento y escalabilidad:
 
-## React Compiler
+- **Frontend Framework**: [React 19](https://react.dev/)
+- **Enrutamiento**: [React Router v7](https://reactrouter.com/)
+- **Herramienta de Construcción**: [Vite 8](https://vitejs.dev/)
+- **Estilos y Diseño**: [Tailwind CSS v4](https://tailwindcss.com/)
+- **Mapas Interactivos**: [React Leaflet](https://react-leaflet.js.org/) y Leaflet (Integración para el mapa inteligente de Los Vergeles).
+- **Gráficos y Visualización de Datos**: [Recharts](https://recharts.org/) (Usado para el Dashboard IoT).
+- **Iconografía**: [Lucide React](https://lucide.dev/)
+- **Linter de Código**: [Oxlint](https://oxc.rs/) para mantener la calidad y rapidez en la revisión.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Estructura del Sitio
 
-## Expanding the Oxlint configuration
+Basado en el documento oficial de diseño de la página web, el portal está estructurado en las siguientes secciones estratégicas:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+1. **INICIO**: Página principal con banners, videos institucionales, indicadores clave y accesos rápidos.
+2. **LA CARRERA**: Información institucional como historia, misión, visión, perfil profesional, autoridades y malla curricular.
+3. **DOCENTES**: Directorio de docentes con fichas detalladas que incluyen especialidad, proyectos, publicaciones y enlaces a Google Scholar, ORCID y Scopus.
+4. **LABORATORIOS**: Secciones para los laboratorios de Redes, IoT, Electrónica y Robótica, mostrando equipamiento y manuales.
+5. **CENTRO DE PRODUCCIÓN TECNOLÓGICA (CPT)**: Servicios, catálogo de productos, impresión 3D, IoT, y registro.
+6. **INVESTIGACIÓN**: Detalle de las líneas de investigación. Destaca el micrositio del **Proyecto Los Vergeles**, que cuenta con monitoreo IoT en tiempo real y un Mapa Inteligente geolocalizado.
+7. **VINCULACIÓN**: Proyectos sociales, convenios, capacitaciones y prácticas preprofesionales.
+8. **SEMILLEROS**: Información sobre los grupos MINTEV y SMART MINDS, integrantes y proyectos.
+9. **COMUNIDAD LOS VERGELES**: Micrositio orientado a los habitantes, mostrando su cultura, geografía y un formulario para reportar necesidades locales.
+10. **REPOSITORIO**: Acceso centralizado a artículos, libros, tesis, normativas e informes.
+11. **NOTICIAS**: Centro de novedades categorizado (Investigación, Eventos, Congresos, etc.).
+12. **CONTACTO**: Mapas de ubicación, redes sociales y formularios de atención.
+13. **PANEL ADMINISTRATIVO**: Entorno con roles definidos para que Administradores, Docentes, Estudiantes y la Comunidad gestionen actividades e información.
+
+## Instalación y Desarrollo Local
+
+Para correr el proyecto en un entorno local de desarrollo, sigue los siguientes pasos:
+
+1. Clona el repositorio en tu equipo:
+   ```bash
+   git clone https://github.com/mawil-hub/carrera.git
+   ```
+
+2. Instala las dependencias de Node:
+   ```bash
+   npm install
+   ```
+
+3. Inicia el servidor de desarrollo con Vite:
+   ```bash
+   npm run dev
+   ```
+El proyecto se ejecutará por defecto en `http://localhost:5173`. Para compilar la versión de producción, utiliza el comando `npm run build`.
