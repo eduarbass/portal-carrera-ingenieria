@@ -8,8 +8,8 @@ export default function Footer() {
         {/* Column 1: Brand & Desc */}
         <div className="space-y-4">
           <div className="flex items-center gap-2.5 text-white font-display font-bold text-lg tracking-wider">
-            <img src="/logo.jpg" alt="Logo Carrera de Ingeniería Telemática" className="h-9 w-auto object-contain rounded-lg" />
-            <span>INGENIERÍA <span className="text-[#66fcf1]">TELEMÁTICA</span></span>
+            <img src="/logo.jpg" alt="Logo Carrera de Ingeniería y Telemática" className="h-9 w-auto object-contain rounded-lg" />
+            <span>INGENIERÍA <span className="text-[#66fcf1]">Y TELEMÁTICA</span></span>
           </div>
           <p className="text-sm leading-relaxed text-gray-500">
             Formando profesionales líderes en la integración de hardware y software, conectando el mundo físico con el digital para resolver problemas reales en el agro y la industria.
@@ -66,7 +66,7 @@ export default function Footer() {
       </div>
 
       <div className="max-w-7xl mx-auto mt-12 pt-6 border-t border-gray-900 text-center text-xs text-gray-600 flex flex-col sm:flex-row justify-between items-center gap-4">
-        <p>&copy; {new Date().getFullYear()} Ingeniería Telemática & Conectividad. Todos los derechos reservados.</p>
+        <p>&copy; {new Date().getFullYear()} Ingeniería y Telemática. Todos los derechos reservados.</p>
         <div className="flex gap-4">
           <a href="#" className="hover:underline">Políticas de Privacidad</a>
           <a href="#" className="hover:underline">Términos de Uso</a>

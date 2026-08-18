@@ -3,7 +3,7 @@ import { Award, Calendar, GraduationCap, ArrowRight, BookOpen, Layers } from 'lu
 
 export default function OfertaAcademica() {
   const details = [
-    { title: 'Título Otorgado', desc: 'Ingeniero/a en Telemática', icon: Award },
+    { title: 'Título Otorgado', desc: 'Ingeniero/a en Ingeniería y Telemática', icon: Award },
     { title: 'Duración', desc: '5 Semestres (2.5 Años de Estudios)', icon: Calendar },
     { title: 'Modalidad', desc: 'Presencial / Híbrida (Con Prácticas de Campo)', icon: GraduationCap },
   ];

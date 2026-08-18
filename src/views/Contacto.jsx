@@ -78,7 +78,7 @@ export default function Contacto() {
               />
               <Marker position={position} icon={createGlowIcon('#0d9488')}>
                 <Popup>
-                  <div className="text-xs font-bold text-slate-800">Campus Ingeniería en Telemática</div>
+                  <div className="text-xs font-bold text-slate-800">Campus Ingeniería y Telemática</div>
                 </Popup>
               </Marker>
             </MapContainer>

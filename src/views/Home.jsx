@@ -59,7 +59,7 @@ export default function Home() {
               <Cpu className="h-3 w-3 animate-spin" /> Carrera de Vanguardia
             </div>
             <h1 className="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl text-slate-900 leading-tight tracking-tight">
-              Ingeniería <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-cyan-600">Telemática</span>
+              Ingeniería <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-cyan-600">y Telemática</span>
             </h1>
             <p className="text-slate-655 text-lg leading-relaxed max-w-xl">
               Domina la tecnología detrás del hardware inteligente, la adquisición de datos ambientales y las comunicaciones en tiempo real. Diseña soluciones que conecten dispositivos físicos para mejorar comunidades e industrias.
@@ -147,7 +147,7 @@ export default function Home() {
         <div className="text-center max-w-3xl mx-auto mb-12 space-y-4">
           <h2 className="text-3xl font-display font-bold text-slate-900">Accesos Rápidos</h2>
           <p className="text-slate-600">
-            Encuentra y accede ágilmente a los servicios, micrositios y recursos de la Carrera de Ingeniería Telemática.
+            Encuentra y accede ágilmente a los servicios, micrositios y recursos de la Carrera de Ingeniería y Telemática.
           </p>
         </div>
 
