@@ -74,7 +74,7 @@ export default function LaCarrera() {
         <div className="relative z-10 text-center max-w-3xl mx-auto">
           <h1 className="font-display font-extrabold text-4xl sm:text-5xl text-slate-900 mb-4">La Carrera</h1>
           <p className="text-slate-600 text-base">
-            Conoce el organigrama, la historia institucional, las autoridades académicas y las normativas que guían el desarrollo de la Carrera de Ingeniería en IoT.
+            Conoce el organigrama, la historia institucional, las autoridades académicas y las normativas que guían el desarrollo de la Carrera de Ingeniería Telemática.
           </p>
         </div>
       </section>
@@ -109,7 +109,7 @@ export default function LaCarrera() {
               </h2>
               <div className="text-slate-650 space-y-4 text-sm leading-relaxed">
                 <p>
-                  La Carrera de Ingeniería en Internet de las Cosas (IoT) y Conectividad fue concebida en el año 2023 en respuesta a la creciente demanda global y local de digitalización y conectividad de sistemas físicos en el ámbito de la Industria 4.0.
+                  La Carrera de Ingeniería Telemática fue concebida en el año 2023 en respuesta a la creciente demanda global y local de digitalización y conectividad de sistemas físicos en el ámbito de la Industria 4.0.
                 </p>
                 <p>
                   Reconociendo el impacto de las redes de baja potencia como LoRaWAN en el sector agrícola regional, y la necesidad de profesionales capaces de integrar sistemas embebidos, analítica en la nube y sensores físicos, el Consejo Universitario aprobó su creación formal.
@@ -128,7 +128,7 @@ export default function LaCarrera() {
                   <Target className="h-6 w-6 text-teal-600" /> Misión
                 </h2>
                 <p className="text-slate-655 text-sm leading-relaxed">
-                  Formar ingenieros en IoT y Conectividad con sólidos principios éticos, capacidad técnica de excelencia e innovación, preparados para concebir, diseñar e implementar sistemas electrónicos y digitales complejos que solventen necesidades socioeconómicas a nivel nacional e internacional.
+                  Formar ingenieros en Telemática con sólidos principios éticos, capacidad técnica de excelencia e innovación, preparados para concebir, diseñar e implementar sistemas electrónicos y digitales complejos que solventen necesidades socioeconómicas a nivel nacional e internacional.
                 </p>
               </div>
               <div className="space-y-4 border-t border-slate-100 pt-6">
@@ -136,7 +136,7 @@ export default function LaCarrera() {
                   <Eye className="h-6 w-6 text-cyan-600" /> Visión
                 </h2>
                 <p className="text-slate-655 text-sm leading-relaxed">
-                  Ser reconocidos en el año 2030 como la carrera líder y referente en tecnologías de conectividad e Internet de las Cosas en el país, impulsando proyectos sostenibles y con alta implicación comunitaria, alineados con el desarrollo del agro inteligente, ciudades inteligentes y la automatización industrial.
+                  Ser reconocidos en el año 2030 como la carrera líder y referente en tecnologías de telemática y conectividad en el país, impulsando proyectos sostenibles y con alta implicación comunitaria, alineados con el desarrollo del agro inteligente, ciudades inteligentes y la automatización industrial.
                 </p>
               </div>
             </div>

@@ -22,3 +22,4 @@ dist-ssr
 # Database config
 public/db_config.php
 dist/db_config.php
+*.pdf

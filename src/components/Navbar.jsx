@@ -56,9 +56,9 @@ export default function Navbar({ currentRole, setCurrentRole }) {
       <div className="w-full">
         <div className="flex items-center justify-between h-14">
           <div className="flex items-center">
-            <Link to="/" className="flex items-center gap-2 text-slate-900 font-display font-bold text-base sm:text-lg tracking-wider">
-              <Cpu className="h-5 w-5 text-teal-600 animate-pulse" />
-              <span>INGENIERÍA <span className="text-teal-600">IoT</span></span>
+            <Link to="/" className="flex items-center gap-2.5 text-slate-900 font-display font-bold text-base sm:text-lg tracking-wider">
+              <img src="/logo.jpg" alt="Logo Carrera de Ingeniería Telemática" className="h-9 w-auto object-contain rounded-lg shadow-sm" />
+              <span className="font-extrabold text-sm sm:text-base text-slate-900">INGENIERÍA <span className="text-teal-600">TELEMÁTICA</span></span>
             </Link>
           </div>
 

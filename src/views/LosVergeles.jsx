@@ -259,7 +259,7 @@ export default function LosVergeles() {
           <div className="glass p-8 rounded-3xl bg-white/50 backdrop-blur-md border border-slate-250/60 shadow-sm space-y-6 animate-fadeIn">
             <h2 className="text-2xl font-bold font-display text-slate-900">Presentación del Proyecto</h2>
             <p className="text-slate-655 text-sm leading-relaxed">
-              El proyecto "Los Vergeles" es una iniciativa de desarrollo e investigación tecnológica ejecutada por la Carrera de Ingeniería en IoT y Conectividad. Consiste en la implementación de una microrred de sensores inteligentes alimentada por energía solar y conectada mediante enlaces de telecomunicaciones LoRaWAN de larga distancia.
+              El proyecto "Los Vergeles" es una iniciativa de desarrollo e investigación tecnológica ejecutada por la Carrera de Ingeniería Telemática. Consiste en la implementación de una microrred de sensores inteligentes alimentada por energía solar y conectada mediante enlaces de telecomunicaciones LoRaWAN de larga distancia.
             </p>
             <h3 className="text-lg font-bold font-display text-slate-900 border-t border-slate-100 pt-4">Objetivos del Proyecto</h3>
             <ul className="space-y-4 text-xs font-semibold text-slate-655 pl-0 list-none">
